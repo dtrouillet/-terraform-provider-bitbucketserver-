@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gavinbunney/terraform-provider-bitbucketserver/bitbucket"
+	"github.com/dtrouillet/terraform-provider-bitbucketserver/bitbucket"
 	"github.com/hashicorp/terraform/plugin"
 )
 
