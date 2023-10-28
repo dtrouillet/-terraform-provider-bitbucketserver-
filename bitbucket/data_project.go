@@ -35,12 +35,36 @@ func dataSourceProject() *schema.Resource {
 			"repos": {
 				Type:     schema.TypeList,
 				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 		},
 	}
 }
 
+type PaginatedProjectRepos struct {
+	Values        []PaginatedProjectReposValue `json:"values,omitempty"`
+	Size          int                          `json:"size,omitempty"`
+	Limit         int                          `json:"limit,omitempty"`
+	IsLastPage    bool                         `json:"isLastPage,omitempty"`
+	Start         int                          `json:"start,omitempty"`
+	NextPageStart int                          `json:"nextPageStart,omitempty"`
+}
+
+type PaginatedProjectReposValue struct {
+	Name        string `json:"name,omitempty"`
+	Slug        string `json:"slug,omitempty"`
+	Description string `json:"description,omitempty"`
+	Forkable    bool   `json:"forkable"`
+	Public      bool   `json:"public,omitempty"`
+	Links       struct {
+		Clone []CloneUrl `json:"clone,omitempty"`
+	} `json:"links,omitempty"`
+}
+
 func dataSourceProjectRead(d *schema.ResourceData, m interface{}) error {
+
 	d.SetId(d.Get("key").(string))
 	err := resourceProjectRead(d, m)
 	if err != nil {
@@ -60,7 +84,7 @@ func dataSourceProjectRead(d *schema.ResourceData, m interface{}) error {
 
 	if project_repos_req.StatusCode == 200 {
 
-		var repos []Repository
+		var repos PaginatedProjectRepos
 
 		body, readerr := ioutil.ReadAll(project_repos_req.Body)
 		if readerr != nil {
@@ -73,7 +97,7 @@ func dataSourceProjectRead(d *schema.ResourceData, m interface{}) error {
 		}
 
 		slugs := make([]string, 0)
-		for _, repo := range repos {
+		for _, repo := range repos.Values {
 			slugs = append(slugs, repo.Slug)
 		}
 
