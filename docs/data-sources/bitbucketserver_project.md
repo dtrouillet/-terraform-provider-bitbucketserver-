@@ -20,3 +20,4 @@ data "bitbucketserver_project" "my-project" {
 * `description` - Description of the project. 
 * `public` - Set to `true` if the project is public. 
 * `avatar` - Avatar url of the project.
+* `repos` - List of repos slugs of the project.
