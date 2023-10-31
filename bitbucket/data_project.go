@@ -74,7 +74,7 @@ func dataSourceProjectRead(d *schema.ResourceData, m interface{}) error {
 	project := d.Get("key").(string)
 
 	client := m.(*BitbucketServerProvider).BitbucketClient
-	project_repos_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos",
+	project_repos_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos?limit=1000000",
 		project,
 	))
 
